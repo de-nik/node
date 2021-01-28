@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const mongoroute = require('./mongo.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -14,7 +13,15 @@ const route = async function route(request, req, client){
 
         else {
             let findreq = req;
-            const find = await collection.findOne(findreq);
+            let find;
+
+            try{
+                find = await collection.findOne(findreq);
+            } catch(e){
+                console.log(e.message);
+                return {error: e.message}
+            }
+            
             if (find) return await mongoroute.update(collection, find);
             return await mongoroute.registration(collection, req.uuid);
         }
@@ -26,7 +33,13 @@ const route = async function route(request, req, client){
 
         else {       
             let findreq = {refresh_token: Buffer.from(req.refresh_token, 'base64').toString('ascii')};
-            const find = await collection.findOne(findreq);
+
+            try{
+                find = await collection.findOne(findreq);
+            } catch(e){
+                console.log(e.message);
+                return {error: e.message}
+            }
 
             if (find) {
                 const [ header, load, signature ] = req.access_token.split('.');

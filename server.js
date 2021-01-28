@@ -4,8 +4,12 @@ const router = require('./router.js');
 function mongoConnection(){
     const MongoClient = require('mongodb').MongoClient;
     const client = new MongoClient("mongodb://localhost:27017/", { useUnifiedTopology: true });
-    client.connect();
-    console.log("Connected to mongodb");
+    client.connect((e)=>{
+        if (e) {
+            console.log('connection error to mongodb: ' + e.message)
+            process.exit();
+        }
+    });
     return client;
 }
 
@@ -20,12 +24,25 @@ server.on('request', (request, response) => {
         request.on('data', chunk => chunks += chunk);
 
         request.on('end', async () => {  
-            let findreq = JSON.parse(chunks);
-            let result = await router.route(request, findreq, client);
+            let findreq;
 
-            response.writeHead(200, { 'Content-Type': 'application/json' });
-            response.write(JSON.stringify(result));
-            response.end();
+            try {
+                findreq = JSON.parse(chunks);
+                let result = await router.route(request, findreq, client);
+
+                if (result.access_token)
+                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                else
+                    response.writeHead(400, { 'Content-Type': 'application/json' });
+
+                response.write(JSON.stringify(result));
+                response.end();
+            } catch (e) {
+                response.writeHead(400, { 'Content-Type': 'application/json' });
+                response.write(JSON.stringify(e.message));
+                response.end();
+            }
+
         });
     }
 
@@ -44,10 +61,10 @@ server.on('request', (request, response) => {
 
 });
 
-let client;
+let client = mongoConnection();
+
 server.listen(3000, function(){
-    console.log("Сервер ожидает подключения...");
-    client = mongoConnection();
+    console.log("Starting server...");
 });
 
 process.on("SIGINT", () => {
