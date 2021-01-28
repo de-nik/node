@@ -29,7 +29,7 @@
 Запрос:
 
 ```bash
-curl -X POST http://localhost:3000/api/gettoken -d {"""uuid""":userId}
+curl -X POST http://localhost:3000/api/gettoken -d {"""uuid""":"""userId"""}
 ```
 
 Ответ: пара - токен, refresh токен.
