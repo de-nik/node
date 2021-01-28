@@ -36,7 +36,7 @@ POST - запрос на localhost:3000/api/gettoken с json в теле зап�
 curl -X POST http://localhost:3000/api/gettoken -d {"""uuid""":"""${userId}"""}
 ```
 
-Ответ: пара - токен, refresh токен.
+Ответ: пара - {токен, refresh токен}
 
 ### Обновление токена.
 
@@ -46,4 +46,4 @@ POST - запрос на localhost:3000/api/refresh с json в теле запр
 curl -X POST http://localhost:3000/api/refresh -d {"""access_token""":"""${accessToken}""", """refresh_token""":"""${refreshToken}"""}
 ```
 
-Ответ: новая пара - токен, refresh токен.
+Ответ: новая пара - {токен, refresh токен}
