@@ -24,9 +24,13 @@
 
 Методы обрабатывают HTTP POST запросы, содержащие все необходимые параметры в JSON.
 
+```bash
+node server.js
+```
+
 ### Получение токена.
 
-Запрос:
+POST - запрос на localhost:3000/api/gettoken с json в теле запроса:
 
 ```bash
 curl -X POST http://localhost:3000/api/gettoken -d {"""uuid""":"""${userId}"""}
@@ -36,7 +40,7 @@ curl -X POST http://localhost:3000/api/gettoken -d {"""uuid""":"""${userId}"""}
 
 ### Обновление токена.
 
-Запрос:
+POST - запрос на localhost:3000/api/refresh с json в теле запроса:
 
 ```bash
 curl -X POST http://localhost:3000/api/refresh -d {"""access_token""":"""${accessToken}""", """refresh_token""":"""${refreshToken}"""}
